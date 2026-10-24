@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS Daily: news and a reason to start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --paper:#eef3f8;--card:#ffffff;--ink:#14213d;--muted:#4a5a74;--line:#c9d6e6;--mark:#ffd23f;--teal:#0f7f74;--grid:#dbe5f1;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0f1726;--card:#17233a;--ink:#e8eefb;--muted:#9fb0cc;--line:#2b3b58;--mark:#ffd23f;--teal:#4fd1c0;--grid:#16223a;color-scheme:dark;}}
+:root[data-theme="dark"]{--paper:#0f1726;--card:#17233a;--ink:#e8eefb;--muted:#9fb0cc;--line:#2b3b58;--mark:#ffd23f;--teal:#4fd1c0;--grid:#16223a;color-scheme:dark;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.6 "IBM Plex Sans",system-ui,sans-serif;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 64px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font:800 20px "Bricolage Grotesque",sans-serif}
+.date{color:var(--muted);font-size:14px}
+.hero{margin:36px 0 28px;padding:28px;background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:8px 8px 0 var(--mark)}
+.hero p.q{font:800 clamp(26px,5vw,42px)/1.15 "Bricolage Grotesque",sans-serif;margin:0 0 18px}
+.task{border-left:4px solid var(--teal);padding:4px 0 4px 14px;margin:0 0 18px}
+.task b{display:block;font-weight:500;color:var(--muted);font-size:14px}
+button{font:500 15px "IBM Plex Sans",sans-serif;background:var(--ink);color:var(--paper);border:0;border-radius:4px;padding:10px 16px;cursor:pointer;min-height:44px}
+button.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+section{margin-top:44px}
+section>p.lead{color:var(--muted);margin:6px 0 18px;max-width:62ch}
+.news{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.news a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.news a:hover{border-color:var(--ink)}
+.news strong{font:600 17px "Bricolage Grotesque",sans-serif;display:block}
+.news span{color:var(--muted);font-size:14px}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:6px 0 16px;max-width:420px}
+.bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+.list{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.list label{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer}
+.list input{width:20px;height:20px;margin-top:3px;accent-color:var(--teal);flex:none}
+.list em{display:block;font-style:normal;color:var(--muted);font-size:14px}
+.list input:checked+div strong{text-decoration:line-through;text-decoration-color:var(--teal)}
+details{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:8px}
+details[open]{border-color:var(--ink)}
+summary{cursor:pointer;padding:12px 16px;min-height:44px;font:600 17px "Bricolage Grotesque",system-ui,sans-serif;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+summary::-webkit-details-marker{display:none}
+summary small{font:400 14px "IBM Plex Sans",system-ui,sans-serif;color:var(--muted)}
+.body{padding:0 16px 16px;display:grid;gap:8px;max-width:70ch}
+.body p{margin:0}
+.body b{color:var(--teal);font-weight:500}
+footer{margin-top:48px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand">CS Daily</div><div class="date" id="date"></div></div>
+
+  <div class="hero">
+    <p class="q" id="quote"></p>
+    <div class="task"><b>Your 20-minute task today</b><span id="task"></span></div>
+    <div class="row"><button id="another">Show another</button><button class="ghost" id="theme">Switch theme</button></div>
+  </div>
+
+  <section>
+    <h2>What’s happening in tech</h2>
+    <p class="lead">These open the live sites, so what you read is always current. Pick two and check them for ten minutes a day.</p>
+    <div class="news" id="news"></div>
+  </section>
+
+  <section id="freshBox" hidden>
+    <h2>Learn something new right now</h2>
+    <p class="lead">Press the button and Claude writes a fresh explainer on a different topic each time. Your browser asks permission the first time. It’s AI-written, so double-check anything important.</p>
+    <button id="freshBtn">Teach me something new</button>
+    <div id="fresh" class="body" style="padding:16px 0 0"></div>
+  </section>
+
+  <section>
+    <h2>What people actually do for work</h2>
+    <p class="lead">Tap a role to see the daily reality, including the unglamorous parts. Each visit shows paths you haven’t seen yet on this device. Many people change paths in their first few years, so treat this as a starting point.</p>
+    <div id="careers"></div>
+    <div class="row" style="margin-top:12px"><button id="careersBtn">Show me another path</button></div>
+  </section>
+
+  <section>
+    <h2>How real things work</h2>
+    <p class="lead">Every DSA and CS topic exists because it solves something real. Tap one to see where it hides in things you use daily. Each visit shows ones you haven’t seen yet on this device.</p>
+    <div id="works"></div>
+    <div class="row" style="margin-top:12px"><button id="worksBtn">Show me another example</button></div>
+  </section>
+
+  <footer>Built for curiosity, not for streaks. Missing a day costs nothing.</footer>
+</div>
+<script>
+var quotes=[
+"You don’t need to know where this ends. You need to write one working function today.",
+"Every engineer you admire once didn’t understand loops either.",
+"Curiosity compounds. Twenty minutes a day beats ten hours once a month.",
+"A bug you can’t explain yet is a puzzle waiting for you, not proof you’re bad at this.",
+"Nobody sees the hundred failed attempts behind a clean solution. Keep making yours.",
+"Learn it because it’s interesting. The jobs will follow the skill.",
+"Today’s confusing topic is next month’s thing you explain to a friend.",
+"Small and finished beats big and imaginary.",
+"Reading code is a skill. So is being stuck. Practice both.",
+"You’re not behind. You’re at the start, and the start is a fine place to be.",
+"Pick one thing. Do it badly. Then do it better tomorrow.",
+"The best time to learn how computers really work was years ago. The second best is this evening."
+];
+var tasks=[
+"Write a function that returns the largest number in a list, without using a built-in max.",
+"Reverse a string by hand. Then do it a second way.",
+"Count how many times each word appears in a sentence using a dictionary or hashmap.",
+"Read about what happens, step by step, when you type a website address and press Enter.",
+"Check if a word is a palindrome. Then handle spaces and capital letters.",
+"Write a recursive function for factorial, then trace it on paper for n = 4.",
+"Find two numbers in a list that add up to a target. Try the slow way first.",
+"Learn the difference between a process and a thread in your own words.",
+"Draw a table of students and courses and write the SQL to join them.",
+"Implement a stack with a list and use it to check balanced brackets.",
+"Explain Big O to an imaginary friend using a phone contacts list as the example.",
+"Pick one small annoyance in your day and write a ten-line script that fixes it."
+];
+var sources=[
+["Hacker News","news.ycombinator.com","https://news.ycombinator.com","What engineers are reading and arguing about right now."],
+["TechCrunch","techcrunch.com","https://techcrunch.com","Startups, funding, and product launches."],
+["The Verge","theverge.com","https://www.theverge.com/tech","Consumer tech and big company moves."],
+["Ars Technica","arstechnica.com","https://arstechnica.com","Deeper reporting on software, security, and science."],
+["MIT Technology Review","technologyreview.com","https://www.technologyreview.com","AI and emerging tech, explained carefully."],
+["InfoQ","infoq.com","https://www.infoq.com","How real companies build software at scale."],
+["GitHub Trending","github.com/trending","https://github.com/trending","Open-source projects people are starring today."],
+["DEV Community","dev.to","https://dev.to","Beginner-friendly articles written by working developers."],
+["Analytics India Magazine","analyticsindiamag.com","https://analyticsindiamag.com","AI and data news with an Indian industry focus."],
+["Inc42","inc42.com","https://inc42.com","Indian startups and tech hiring."]
+];
+var careers=[
+["Backend developer","Builds what runs behind an app","Write and fix the code behind apps: APIs, databases, and business logic. Review teammates’ code, debug problems, and sit in planning meetings.","One language (Java, Python, Node, or Go), SQL, DSA, and how web servers work.","Lots of openings, and pay tends to grow well with experience.","Production bugs, sometimes on-call duty, and a lot of time reading code someone else wrote."],
+["Frontend developer","Builds what users see and tap","Turn designs into working pages and screens, make them fast and accessible, and connect them to backend data.","HTML, CSS, JavaScript, then a framework like React.","You see results instantly, and it’s one of the easiest areas to build projects in.","Tools change quickly, and a lot of the work is small visual details and browser differences."],
+["Data analyst","Answers business questions using data","Pull data with SQL, clean it, build charts and reports, and explain findings to people who don’t code.","SQL, Excel, Python, basic statistics, and a dashboard tool.","A realistic entry point into data work, and the skills are useful in many industries.","Much of the time goes to cleaning messy data. Machine learning roles are harder to enter as a fresher and often expect strong math."],
+["QA or test engineer","Finds problems before users do","Plan tests, run them, report bugs, and increasingly write automated tests that run on every code change.","Testing basics, one programming language, and automation tools like Selenium or Playwright.","Often an easier first job to land, and it teaches you how real products get built.","Manual testing alone has limited growth. Moving into automation is what opens up more."],
+["DevOps or cloud engineer","Keeps software running reliably","Set up servers, deployment pipelines, and monitoring so teams can release code safely. Respond when something breaks.","Linux, networking, Git, Docker, a cloud platform (AWS, Azure, or GCP), and scripting.","High demand, and you understand the whole system rather than one piece.","Few true fresher openings, on-call stress, and a wide set of tools to learn."],
+["Cybersecurity analyst","Protects systems from attacks","Watch for threats, investigate alerts, check systems for weaknesses, and help teams fix them.","Networking, Linux, how web attacks work, and security basics. Certifications often help.","Growing need across every industry, and the work stays varied.","It needs broad knowledge, entry-level roles can be limited, and some work is repetitive alert-checking."]
+];
+var works=[
+["How Google finds results so fast","Hashing","Google doesn’t scan the whole web when you search. It builds an index in advance, like the index at the back of a book: for each word, a list of pages containing it. Looking up a word is a fast hashmap-style lookup, and then the matching pages are ranked.","Hashmaps and sets, then searching and sorting."],
+["What happens when you open a website","Computer networks","Your browser asks DNS to turn the name into an IP address, opens a connection to that server (secured with TLS), sends an HTTP request, and gets back HTML. It then fetches images and scripts and draws the page.","Computer networks: IP, TCP, DNS, and HTTP."],
+["How a chat message gets delivered","Queues","Your phone sends the message to a server. If the other person is offline, the server holds it in a queue and delivers it when they reconnect. The ticks you see show which stage the message has reached.","Queues, plus basic networking."],
+["How Maps finds your route","Graphs","Junctions are nodes and roads are edges, each with a cost such as travel time. Algorithms like Dijkstra’s and A* search for the cheapest path. Real apps also add live traffic and precomputed shortcuts to answer quickly.","Graphs, BFS, DFS, then shortest-path algorithms."],
+["How your phone runs many apps at once","Operating systems","The OS switches the CPU between programs in tiny time slices, many times a second, so it feels simultaneous. It also gives each program its own protected memory so one crash doesn’t take down the rest.","Processes, threads, scheduling, and memory management."],
+["How undo (Ctrl+Z) works","Stacks","Every action you take is pushed onto a stack. Undo pops the most recent one and reverses it. Redo is usually a second stack that keeps what you just undid.","Stacks, then try building undo for a tiny text editor."]
+];
+function row(p,l,t){var e=document.createElement("p"),b=document.createElement("b");b.textContent=l+" ";e.appendChild(b);e.appendChild(document.createTextNode(t));p.appendChild(e)}
+function card(target,title,tag,rows){var d=document.createElement("details"),s=document.createElement("summary"),t=document.createElement("span"),g=document.createElement("small"),body=document.createElement("div");t.textContent=title;g.textContent=tag;s.appendChild(t);s.appendChild(g);body.className="body";rows.forEach(function(r){row(body,r[0],r[1])});d.appendChild(s);d.appendChild(body);target.appendChild(d)}
+var d=new Date(),day=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000),i=Math.floor(Math.random()*quotes.length),j=Math.floor(Math.random()*tasks.length);
+document.getElementById("date").textContent=d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"});
+function show(){document.getElementById("quote").textContent=quotes[i];document.getElementById("task").textContent=tasks[j]}
+show();
+document.getElementById("another").onclick=function(){i=(i+1)%quotes.length;j=(j+1)%tasks.length;show()};
+document.getElementById("theme").onclick=function(){var r=document.documentElement,dark=r.getAttribute("data-theme")?r.getAttribute("data-theme")==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.setAttribute("data-theme",dark?"light":"dark")};
+var n=document.getElementById("news");
+sources.forEach(function(s){var a=document.createElement("a");a.href=s[2];a.target="_blank";a.rel="noopener noreferrer";
+a.innerHTML="<strong></strong><span></span>";a.children[0].textContent=s[0];a.children[1].textContent=s[3];n.appendChild(a)});
+careers.push(
+["Mobile app developer","Builds apps for phones","Build and maintain Android or iPhone apps, fix crashes that users report, and work closely with designers.","Kotlin for Android, Swift for iPhone, or Flutter or React Native for both. Plus basic DSA and APIs.","You can hold what you built, and a small team can ship a whole app.","Fewer openings than web roles, and phone platforms change their rules often."],
+["Game developer","Builds games and interactive worlds","Program game rules, movement and graphics, fix performance problems, and test with designers and artists.","C++ or C# with an engine like Unity or Unreal, plus math and physics basics.","Creative work that mixes code, art and maths, and playable projects make a strong portfolio.","Crunch periods before releases, and pay is often lower than in other software jobs."],
+["Product manager","Decides what the team builds and why","Talk to users, set priorities, write what a feature should do, and coordinate engineers, designers and business teams. Mostly meetings and writing, not code.","Understanding users, basic data analysis, clear writing, and enough tech knowledge to talk with engineers.","You shape the product and see the whole picture.","Rarely a fresher role, and you are responsible for results without controlling the people doing the work."],
+["Embedded systems engineer","Writes software for devices","Write code that runs inside things like car parts, medical devices and appliances, often close to the hardware.","C and C++, microcontrollers, electronics basics, and operating systems.","Your code runs in real physical products, and good engineers are hard to find.","Debugging with hardware is slow, resources are tight, and fewer companies hire for it."],
+["Machine learning engineer","Builds systems that learn from data","Prepare data, train and test models, and put them into products so they run reliably. A lot of the work is data and infrastructure, not new algorithms.","Python, statistics, linear algebra, a library like PyTorch, and solid software skills.","Interesting problems and strong demand for people who can ship working systems.","Hard to enter as a fresher, often expects advanced study, and results can be unpredictable."],
+["Site reliability engineer","Keeps big services from going down","Watch system health, respond to outages, and write automation so the same failure doesn’t happen twice.","Linux, networking, programming, monitoring tools, and how distributed systems fail.","A deep understanding of how large systems really work, and strong pay.","Usually needs prior experience, on-call duty, and stressful incidents."]
+);
+works.push(
+["How websites load fast with caching","Caching","A cache keeps a copy of something you already fetched so the next request is instant. Browsers keep images and files locally, and content networks keep copies near you, so the request often never reaches the original server.","Hashmaps, then cache rules like least recently used (LRU)."],
+["How sites check your password without knowing it","Hashing and security","A site stores a one-way scrambled version of your password (a hash), not the password itself. At login it scrambles what you typed and compares the two. Good systems add a random salt so identical passwords look different.","Hashing, then basic cryptography."],
+["How search boxes suggest words as you type","Tries","Words are stored in a tree where each step is a letter. Typing a few letters takes you to one spot, and everything below it is a suggestion. This is much faster than checking every word.","Trees, then tries."],
+["How video streaming plays without downloading it all","Buffering and queues","The video is cut into small chunks. Your player downloads a few ahead of what you are watching and picks lower or higher quality chunks depending on your speed. That is why quality changes when the network slows.","Queues, networking, and how HTTP works."],
+["How Git keeps every version of your code","Version control","Git saves snapshots of your files as a chain of commits, each pointing to the one before it, a bit like a linked list. Branches are just labels on that chain, which is why switching and merging are cheap.","Linked lists, graphs, then Git basics."],
+["How a zip file gets smaller","Compression","Compression finds repeated patterns and gives common ones shorter codes, like using a nickname for a name you say constantly. Nothing is lost, and the original is rebuilt exactly when you unzip.","Hashing, trees, and Huffman coding."]
+);
+var sampleP=(window.claude&&claude.use)?claude.use("sample").catch(function(){return null}):Promise.resolve(null);
+function sget(k){try{return JSON.parse(localStorage.getItem("csd-seen-"+k))||[]}catch(e){return[]}}
+function sset(k,a){try{localStorage.setItem("csd-seen-"+k,JSON.stringify(a))}catch(e){}}
+var feeds={
+careers:{bank:careers,labels:["Daily work.","What to learn.","The good.","The hard part."],about:"an IT or computer science career path (a job role)",order:"role name, one-line summary, daily work, what to learn, the good parts, the hard parts"},
+works:{bank:works,labels:["What happens.","Topic to study."],about:"how an everyday technology works and which computer science idea is behind it",order:"a curious question as the title, the CS topic in one to three words, what happens in 3 to 4 plain sentences, what to study next"}
+};
+async function more(kind,n,allowGen){
+var f=feeds[kind],el=document.getElementById(kind),btn=document.getElementById(kind+"Btn"),label=btn.textContent,seen=sget(kind),msg="",
+pick=f.bank.filter(function(x){return seen.indexOf(x[0])<0}).sort(function(){return Math.random()-.5}).slice(0,n),
+old=el.querySelector(".note");
+if(old)old.remove();
+if(pick.length<n){
+if(!allowGen){msg="You’ve seen every example saved on this page. Press the button for a brand-new one."}
+else{
+var s=await sampleP;
+if(!s){msg="Brand-new ones are only written when this page is opened inside claude.ai."}
+else{
+btn.disabled=true;btn.textContent="Writing a new one…";
+try{
+var shown=seen.concat(pick.map(function(x){return x[0]})).map(function(t){return t.toLowerCase()});
+var r=await s.json("Write "+(n-pick.length)+" new item(s) for a first-year computer science student about "+f.about+". Do not repeat or closely overlap any of these already shown: "+shown.join("; ")+". Use only accurate, well-known facts, with no invented statistics, salaries or company internals. Reply with only JSON like {\"items\":[[\"text\",\"text\"]]} where each item is an array of exactly "+(f.labels.length+2)+" strings in this order: "+f.order+". Variation seed: "+Math.random()+".",{modelTier:"quick",cache:false});
+(r.items||[]).forEach(function(x){if(Array.isArray(x)&&x.length===f.labels.length+2&&x.every(function(v){return typeof v==="string"&&v})&&pick.length<n&&shown.indexOf(x[0].toLowerCase())<0)pick.push(x)});
+if(!pick.length)msg="Couldn’t write a new one right now. Try again in a moment.";
+}catch(e){msg=e&&e.code==="not_granted"?"Permission was declined. Reload the page to try again.":e&&e.code==="rate_limited"?"Too many requests. Wait a minute and try again.":"Couldn’t write a new one right now. Try again in a moment."}
+btn.disabled=false;btn.textContent=label;
+}
+}
+}
+pick.forEach(function(x){card(el,x[0],x[1],f.labels.map(function(l,i){return[l,x[i+2]]}));seen.push(x[0])});
+sset(kind,seen);
+if(msg){var p=document.createElement("p");p.className="note date";p.textContent=msg;el.appendChild(p)}
+}
+more("careers",2,false);more("works",2,false);
+document.getElementById("careersBtn").onclick=function(){more("careers",1,true)};
+document.getElementById("worksBtn").onclick=function(){more("works",1,true)};
+
+(function(){
+var topics=["hashing","recursion","sorting","binary trees","graphs","stacks and queues","databases and indexes","operating systems","computer networks","caching","encryption","compilers","memory management","version control","APIs","concurrency","compression"];
+var box=document.getElementById("freshBox"),btn=document.getElementById("freshBtn"),out=document.getElementById("fresh");
+if(!window.claude||!claude.use)return;
+claude.use("sample").then(function(sample){
+if(!sample)return;
+box.hidden=false;
+btn.onclick=async function(){
+btn.disabled=true;out.textContent="Thinking…";
+try{
+var t=topics[Math.floor(Math.random()*topics.length)];
+var r=await sample.json("You are writing for a first-year computer science student who is just starting out. Write one accurate explainer about a real product or everyday technology that depends on the idea of "+t+". Do not invent statistics or company internals you are unsure of; keep to well-known, widely documented facts. Variation seed: "+Math.random()+". Reply with only JSON using these keys: title (a curious question, max 12 words), explanation (3 to 4 plain sentences, explain any jargon), topic (the CS topic to study), tryit (one small exercise that takes about 15 minutes).",{modelTier:"quick",cache:false});
+out.textContent="";
+var h=document.createElement("h3");h.textContent=r.title;out.appendChild(h);
+row(out,"What happens.",r.explanation);row(out,"Topic to study.",r.topic);row(out,"Try it.",r.tryit);
+}catch(e){
+var c=e&&e.code;
+out.textContent=c==="not_granted"?"Permission was declined. Reload the page to try again.":c==="rate_limited"?"Too many requests. Wait a minute and try again.":"Couldn’t load a new one right now. Try again in a moment.";
+}
+btn.disabled=false;
+};
+});
+})();
+</script>
+</body>
+</html>
